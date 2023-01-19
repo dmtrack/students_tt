@@ -11,8 +11,8 @@ const User = sequelize.define('students', {
     nickname: { type: DataTypes.STRING, unique: false, allowNull: false },
     email: { type: DataTypes.STRING, unique: true, allowNull: false },
     registered: { type: DataTypes.INTEGER },
-    login: { type: DataTypes.STRING, allowNull: false },
-    status: { type: DataTypes.STRING, allowNull: false },
+    login: { type: DataTypes.INTEGER, allowNull: false },
+    status: { type: DataTypes.INTEGER, allowNull: false },
 });
 
 module.exports = User;
