@@ -3,30 +3,19 @@ const User = require('../models/users');
 
 class UserController {
     async createUser(obj: IUser): Promise<void> {
+        console.log(obj.body);
         try {
-            let { nickname, email, registered, login, status } = obj;
-            let dateArray = registered.trim().split(' ');
-            const [day, month, year] = dateArray[0].split('.');
-            let [hours, minutes] = dateArray[1].split(':');
-            if (hours.length === 1) {
-                hours = 0 + hours;
-            }
+            let { nickname, email, registered, login, status } = obj.body;
+            let registeredDateA = registered.split('.');
+            let [day, month, year] = registeredDateA;
             const registeredN =
-                new Date(
-                    Number(year),
-                    Number(month),
-                    Number(day),
-                    Number(hours),
-                    Number(minutes)
-                ).getTime() / 1000;
+                new Date(Number(year), Number(month), Number(day)).getTime() /
+                1000;
+            let loginDateA = login.split('.');
+            [day, month, year] = loginDateA;
             const loginN =
-                new Date(
-                    Number(year),
-                    Number(month),
-                    Number(day),
-                    Number(hours),
-                    Number(minutes)
-                ).getTime() / 1000;
+                new Date(Number(year), Number(month), Number(day)).getTime() /
+                1000;
             nickname = nickname.trim();
             status = status.trim();
             await User.create({
@@ -45,7 +34,9 @@ class UserController {
     async getUsers(req: any, res: any) {
         const users = await User.findAll();
         users.map((user: IUser) => {
-            let date = new Date(Number(user.registered) * 1000).toISOString();
+            let date = new Date(
+                Number(user.body.registered) * 1000
+            ).toISOString();
             let dateArray = date.split('T');
             let newTime =
                 dateArray[0].slice(-2) +
@@ -56,7 +47,7 @@ class UserController {
                 ' ' +
                 dateArray[1].slice(0, 5);
 
-            user.registered = newTime;
+            user.body.registered = newTime;
         });
         return res.json(users);
     }
