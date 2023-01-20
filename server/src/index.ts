@@ -1,31 +1,24 @@
-require('dotenv').config();
-const express = require('express');
-const fileUpload = require('express-fileupload');
-const sequelize = require('./db');
-const models = require('./models/models');
+import express from 'express';
+import connection from './db/config';
+import dotenv from 'dotenv';
+dotenv.config();
+import userRouter from './routes/user.routes';
+// const userRouter = require('./routes/user.routes');
 const cors = require('cors');
-const userRouter = require('./routes/user.routes');
-const errorHandler = require('./middleware/ErrorHandlingMiddleware');
 
-const PORT: number | string = process.env.PORT || 8000;
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(fileUpload({}));
+
 app.use('/api', userRouter);
 
-app.use(errorHandler);
+connection
+    .sync()
+    .then(() => {
+        console.log('Database synced succesfully');
+    })
+    .catch((err) => {
+        console.log('Err', err);
+    });
 
-const start = async (): Promise<void> => {
-    try {
-        await sequelize.authenticate();
-        await sequelize.sync();
-        app.listen(PORT, () => {
-            console.log(`server started at port:${PORT}`);
-        });
-    } catch (e) {
-        console.log(e);
-    }
-};
-
-start();
+app.listen(3000);
