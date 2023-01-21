@@ -79,58 +79,73 @@ const updateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
 });
 exports.updateUser = updateUser;
 const signUp = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('hello new user:', req.body);
     try {
-        const { id } = req.body;
-        // const blockedUser: User | null = await User.findByPk(id);
-        // await User.update({ where: { id } });
-        return res
-            .status(200)
-            .json({ message: `user with id:${id} was succesfully signed up` });
+        const { email } = req.body;
+        const user = yield users_1.User.findOne({
+            where: { email: email },
+        });
+        if (!user) {
+            let user = yield users_1.User.create(Object.assign({}, req.body));
+            return res.status(200).json({
+                message: `user with id:${user.id} was succesfully signed up`,
+                data: user,
+            });
+        }
+        else
+            throw Error;
     }
     catch (err) {
-        return err.message;
+        return res.status(409).json({
+            error: 409,
+            message: `user with email: ${req.body.email} is already exist`,
+        });
     }
 });
 exports.signUp = signUp;
 const signIn = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        try {
-            const { id } = req.body;
-            yield users_1.User.update({ login: 'today' }, { where: { id } });
-            const user = yield users_1.User.findByPk(id);
+        const { email } = req.body;
+        const user = yield users_1.User.findOne({
+            where: { email: email },
+        });
+        if (user) {
+            yield users_1.User.update({ login: 'today1' }, { where: { email: email } });
             return res.status(200).json({
-                message: `user with id: ${id} was signed in`,
+                message: `user with id: ${user.id} was signed in`,
                 data: user,
             });
         }
-        catch (err) {
-            return err.message;
-        }
-        // const { id } = req.params;
-        // const blockedUser: User | null = await User.findByPk(id);
-        // await User.update({ where: { id } });
-        // return res
-        //     .status(200)
-        //     .json({ message: `user with id: ${id} was succesfully deleted` });
+        else
+            throw Error;
     }
     catch (err) {
-        return err.message;
+        return res.status(401).json({
+            error: 401,
+            message: `${err.message}`,
+        });
     }
 });
 exports.signIn = signIn;
 const toggleStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.body;
-        yield users_1.User.update({ blocked: req.body.blocked }, { where: { id } });
-        const updatedUser = yield users_1.User.findByPk(id);
-        return res.status(200).json({
-            message: `user's status with id: ${id} is changed`,
-            data: updatedUser,
-        });
+        const user = yield users_1.User.findByPk(id);
+        if (user) {
+            yield users_1.User.update({ blocked: !user.blocked }, { where: { id } });
+            const updatedUser = yield users_1.User.findByPk(id);
+            return res.status(200).json({
+                message: `user's status with id: ${id} is changed to ${!user.blocked}`,
+                data: updatedUser,
+            });
+        }
+        else
+            throw Error;
     }
     catch (err) {
-        return err.message;
+        return res.status(404).json({
+            error: 404,
+            message: `${err.message}`,
+        });
     }
 });
 exports.toggleStatus = toggleStatus;
