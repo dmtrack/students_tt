@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = exports.getUserById = exports.getAllUsers = exports.deleteUser = exports.createUser = void 0;
+exports.toggleStatus = exports.signIn = exports.signUp = exports.updateUser = exports.getUserById = exports.getAllUsers = exports.deleteUser = exports.createUser = void 0;
 const users_1 = require("../models/users");
 const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -30,7 +30,7 @@ const deleteUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         yield users_1.User.destroy({ where: { id } });
         return res.status(200).json({
             message: `user with id: ${id} was succesfully deleted`,
-            data: exports.deleteUser,
+            data: deletedUser,
         });
     }
     catch (err) {
@@ -78,15 +78,59 @@ const updateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.updateUser = updateUser;
-// export const blockUser: RequestHandler = async (req, res, next) => {
-//     try {
-//         const { id } = req.params;
-//         const blockedUser: User | null = await User.findByPk(id);
-//         await User.update({ where: { id } });
-//         return res
-//             .status(200)
-//             .json({ message: `user with id: ${id} was succesfully deleted` });
-//     } catch (err: any) {
-//         return err.message;
-//     }
-// };
+const signUp = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('hello new user:', req.body);
+    try {
+        const { id } = req.body;
+        // const blockedUser: User | null = await User.findByPk(id);
+        // await User.update({ where: { id } });
+        return res
+            .status(200)
+            .json({ message: `user with id:${id} was succesfully signed up` });
+    }
+    catch (err) {
+        return err.message;
+    }
+});
+exports.signUp = signUp;
+const signIn = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        try {
+            const { id } = req.body;
+            yield users_1.User.update({ login: 'today' }, { where: { id } });
+            const user = yield users_1.User.findByPk(id);
+            return res.status(200).json({
+                message: `user with id: ${id} was signed in`,
+                data: user,
+            });
+        }
+        catch (err) {
+            return err.message;
+        }
+        // const { id } = req.params;
+        // const blockedUser: User | null = await User.findByPk(id);
+        // await User.update({ where: { id } });
+        // return res
+        //     .status(200)
+        //     .json({ message: `user with id: ${id} was succesfully deleted` });
+    }
+    catch (err) {
+        return err.message;
+    }
+});
+exports.signIn = signIn;
+const toggleStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.body;
+        yield users_1.User.update({ blocked: req.body.blocked }, { where: { id } });
+        const updatedUser = yield users_1.User.findByPk(id);
+        return res.status(200).json({
+            message: `user's status with id: ${id} is changed`,
+            data: updatedUser,
+        });
+    }
+    catch (err) {
+        return err.message;
+    }
+});
+exports.toggleStatus = toggleStatus;

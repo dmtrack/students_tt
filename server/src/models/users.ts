@@ -37,8 +37,8 @@ export class User extends Model {
     })
     login!: string;
     @Column({
-        type: DataType.STRING,
+        type: DataType.BOOLEAN,
         allowNull: false,
     })
-    status!: string;
+    blocked!: boolean;
 }

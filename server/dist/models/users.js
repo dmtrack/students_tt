@@ -44,10 +44,10 @@ __decorate([
 ], User.prototype, "login", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({
-        type: sequelize_typescript_1.DataType.STRING,
+        type: sequelize_typescript_1.DataType.BOOLEAN,
         allowNull: false,
     })
-], User.prototype, "status", void 0);
+], User.prototype, "blocked", void 0);
 User = __decorate([
     (0, sequelize_typescript_1.Table)({
         timestamps: false,

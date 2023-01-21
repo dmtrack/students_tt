@@ -63,15 +63,57 @@ export const updateUser: RequestHandler = async (req, res, next) => {
     }
 };
 
-// export const blockUser: RequestHandler = async (req, res, next) => {
-//     try {
-//         const { id } = req.params;
-//         const blockedUser: User | null = await User.findByPk(id);
-//         await User.update({ where: { id } });
-//         return res
-//             .status(200)
-//             .json({ message: `user with id: ${id} was succesfully deleted` });
-//     } catch (err: any) {
-//         return err.message;
-//     }
-// };
+export const signUp: RequestHandler = async (req, res, next) => {
+    console.log('hello new user:', req.body);
+
+    try {
+        const { id } = req.body;
+        // const blockedUser: User | null = await User.findByPk(id);
+        // await User.update({ where: { id } });
+        return res
+            .status(200)
+            .json({ message: `user with id:${id} was succesfully signed up` });
+    } catch (err: any) {
+        return err.message;
+    }
+};
+
+export const signIn: RequestHandler = async (req, res, next) => {
+    try {
+        try {
+            const { id } = req.body;
+            await User.update({ login: 'today' }, { where: { id } });
+            const user: User | null = await User.findByPk(id);
+
+            return res.status(200).json({
+                message: `user with id: ${id} was signed in`,
+                data: user,
+            });
+        } catch (err: any) {
+            return err.message;
+        }
+
+        // const { id } = req.params;
+        // const blockedUser: User | null = await User.findByPk(id);
+        // await User.update({ where: { id } });
+        // return res
+        //     .status(200)
+        //     .json({ message: `user with id: ${id} was succesfully deleted` });
+    } catch (err: any) {
+        return err.message;
+    }
+};
+
+export const toggleStatus: RequestHandler = async (req, res, next) => {
+    try {
+        const { id } = req.body;
+        await User.update({ blocked: req.body.blocked }, { where: { id } });
+        const updatedUser: User | null = await User.findByPk(id);
+        return res.status(200).json({
+            message: `user's status with id: ${id} is changed`,
+            data: updatedUser,
+        });
+    } catch (err: any) {
+        return err.message;
+    }
+};

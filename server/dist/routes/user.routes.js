@@ -8,4 +8,7 @@ router.get('/getusers', userController_1.getAllUsers);
 router.get('/getuser/:id', userController_1.getUserById);
 router.put('/updateuser/:id', userController_1.updateUser);
 router.delete('/deleteuser/:id', userController_1.deleteUser);
+router.post('/signup', userController_1.signUp);
+router.post('/signin', userController_1.signIn);
+router.put('/togglestatus/', userController_1.toggleStatus);
 exports.default = router;
