@@ -1,4 +1,3 @@
-import { log } from 'console';
 import { RequestHandler } from 'express';
 import { User } from '../models/users';
 
