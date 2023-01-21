@@ -1,10 +1,13 @@
+import { log } from 'console';
 import { RequestHandler } from 'express';
 import { User } from '../models/users';
 
 export const createUser: RequestHandler = async (req, res, next) => {
     try {
         let user = await User.create({ ...req.body });
-        return res.status(200).json({ message: 'user created succesfully' });
+        return res
+            .status(200)
+            .json({ message: 'user created succesfully', data: user });
     } catch (err: any) {
         return err.message;
     }

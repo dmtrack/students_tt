@@ -21,20 +21,21 @@ export class User extends Model {
     @Column({
         type: DataType.STRING,
         allowNull: false,
+        unique: true,
     })
     email!: string;
 
     @Column({
-        type: DataType.INTEGER,
+        type: DataType.STRING,
         allowNull: false,
     })
-    registered!: number;
+    registered!: string;
 
     @Column({
-        type: DataType.INTEGER,
+        type: DataType.STRING,
         allowNull: false,
     })
-    login!: number;
+    login!: string;
     @Column({
         type: DataType.STRING,
         allowNull: false,
