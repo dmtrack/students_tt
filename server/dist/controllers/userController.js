@@ -9,60 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.toggleStatus = exports.signIn = exports.signUp = exports.updateUser = exports.getUserById = exports.getAllUsers = exports.deleteUser = exports.createUser = void 0;
+exports.getUserById = exports.getAllUsers = exports.deleteUser = exports.createUser = exports.toggleStatus = exports.signIn = exports.signUp = exports.updateUser = void 0;
 const users_1 = require("../models/users");
-const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        let user = yield users_1.User.create(Object.assign({}, req.body));
-        return res
-            .status(200)
-            .json({ message: 'user created succesfully', data: user });
-    }
-    catch (err) {
-        return err.message;
-    }
-});
-exports.createUser = createUser;
-const deleteUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { id } = req.params;
-        const deletedUser = yield users_1.User.findByPk(id);
-        yield users_1.User.destroy({ where: { id } });
-        return res.status(200).json({
-            message: `user with id: ${id} was succesfully deleted`,
-            data: deletedUser,
-        });
-    }
-    catch (err) {
-        return err.message;
-    }
-});
-exports.deleteUser = deleteUser;
-const getAllUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const allUsers = yield users_1.User.findAll();
-        return res
-            .status(200)
-            .json({ message: `users fetched successfully`, data: allUsers });
-    }
-    catch (err) {
-        return err.message;
-    }
-});
-exports.getAllUsers = getAllUsers;
-const getUserById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { id } = req.params;
-        const user = yield users_1.User.findByPk(id);
-        return res
-            .status(200)
-            .json({ message: `user with id: ${id} was fetched`, data: user });
-    }
-    catch (err) {
-        return err.message;
-    }
-});
-exports.getUserById = getUserById;
 const updateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
@@ -149,3 +97,55 @@ const toggleStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.toggleStatus = toggleStatus;
+const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let user = yield users_1.User.create(Object.assign({}, req.body));
+        return res
+            .status(200)
+            .json({ message: 'user created succesfully', data: user });
+    }
+    catch (err) {
+        return err.message;
+    }
+});
+exports.createUser = createUser;
+const deleteUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const deletedUser = yield users_1.User.findByPk(id);
+        yield users_1.User.destroy({ where: { id } });
+        return res.status(200).json({
+            message: `user with id: ${id} was succesfully deleted`,
+            data: deletedUser,
+        });
+    }
+    catch (err) {
+        return err.message;
+    }
+});
+exports.deleteUser = deleteUser;
+const getAllUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const allUsers = yield users_1.User.findAll();
+        return res
+            .status(200)
+            .json({ message: `users fetched successfully`, data: allUsers });
+    }
+    catch (err) {
+        return err.message;
+    }
+});
+exports.getAllUsers = getAllUsers;
+const getUserById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const user = yield users_1.User.findByPk(id);
+        return res
+            .status(200)
+            .json({ message: `user with id: ${id} was fetched`, data: user });
+    }
+    catch (err) {
+        return err.message;
+    }
+});
+exports.getUserById = getUserById;
