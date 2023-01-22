@@ -6,7 +6,7 @@ type MainPageProps = {
     users: IUser[];
 };
 
-const MainPage = (): JSX.Element => {
+const MainPage = () => {
     const users: IUser[] = [
         {
             id: 1,
@@ -19,7 +19,7 @@ const MainPage = (): JSX.Element => {
     ];
     return (
         <div className="container mx-auto max-w-lg pt-5">
-            <UsersList users={users} loading={false} />
+            {/* <UsersList users={users} loading={false} /> */}
         </div>
     );
 };

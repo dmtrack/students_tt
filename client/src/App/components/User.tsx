@@ -31,7 +31,7 @@ function User(user: IUser) {
                     {registered}
                 </td>
                 <td style={{ textAlign: 'center', width: '100px' }}>
-                    {status}
+                    {blocked}
                 </td>
             </tr>
         </>

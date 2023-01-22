@@ -10,7 +10,7 @@ const App: React.FC = () => {
             <Navigation />
             <Routes>
                 <Route path="/auth" element={<AuthPage />} />
-                <Route path="/main" element={<MainPage />} />
+                <Route path="/" element={<MainPage />} />
             </Routes>
         </>
     );
