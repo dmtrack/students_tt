@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserById = exports.getAllUsers = exports.deleteUser = exports.createUser = exports.toggleStatus = exports.signIn = exports.signUp = exports.updateUser = void 0;
+exports.getUserById = exports.getAllUsers = exports.createUser = exports.deleteUser = exports.toggleStatus = exports.signIn = exports.signUp = exports.updateUser = void 0;
 const users_1 = require("../models/users");
 const updateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -76,18 +76,17 @@ const signIn = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
 exports.signIn = signIn;
 const toggleStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id } = req.body;
-        const user = yield users_1.User.findByPk(id);
-        if (user) {
-            yield users_1.User.update({ blocked: !user.blocked }, { where: { id } });
-            const updatedUser = yield users_1.User.findByPk(id);
-            return res.status(200).json({
-                message: `user's status with id: ${id} is changed to ${!user.blocked}`,
-                data: updatedUser,
-            });
-        }
-        else
-            throw Error;
+        req.body.forEach((id) => __awaiter(void 0, void 0, void 0, function* () {
+            const user = yield users_1.User.findByPk(id);
+            if (user) {
+                yield users_1.User.update({ blocked: !user.blocked }, { where: { id } });
+                const updatedUser = yield users_1.User.findByPk(id);
+            }
+        }));
+        return res.status(200).json({
+            message: `user's status with id are changed`,
+            id: req.body,
+        });
     }
     catch (err) {
         return res.status(404).json({
@@ -97,6 +96,21 @@ const toggleStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.toggleStatus = toggleStatus;
+const deleteUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        req.body.forEach((id) => __awaiter(void 0, void 0, void 0, function* () {
+            yield users_1.User.destroy({ where: { id } });
+        }));
+        return res.status(200).json({
+            message: `users status with ids are deleted`,
+            id: req.body,
+        });
+    }
+    catch (err) {
+        return err.message;
+    }
+});
+exports.deleteUser = deleteUser;
 const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let user = yield users_1.User.create(Object.assign({}, req.body));
@@ -109,21 +123,6 @@ const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.createUser = createUser;
-const deleteUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { id } = req.params;
-        const deletedUser = yield users_1.User.findByPk(id);
-        yield users_1.User.destroy({ where: { id } });
-        return res.status(200).json({
-            message: `user with id: ${id} was succesfully deleted`,
-            data: deletedUser,
-        });
-    }
-    catch (err) {
-        return err.message;
-    }
-});
-exports.deleteUser = deleteUser;
 const getAllUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const allUsers = yield users_1.User.findAll();

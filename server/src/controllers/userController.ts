@@ -59,21 +59,39 @@ export const signIn: RequestHandler = async (req, res, next) => {
 
 export const toggleStatus: RequestHandler = async (req, res, next) => {
     try {
-        const { id } = req.body;
-        const user = await User.findByPk(id);
-        if (user) {
-            await User.update({ blocked: !user.blocked }, { where: { id } });
-            const updatedUser: User | null = await User.findByPk(id);
-            return res.status(200).json({
-                message: `user's status with id: ${id} is changed to ${!user.blocked}`,
-                data: updatedUser,
-            });
-        } else throw Error;
+        req.body.forEach(async (id: string) => {
+            const user = await User.findByPk(id);
+            if (user) {
+                await User.update(
+                    { blocked: !user.blocked },
+                    { where: { id } }
+                );
+                const updatedUser: User | null = await User.findByPk(id);
+            }
+        });
+        return res.status(200).json({
+            message: `user's status with id are changed`,
+            id: req.body,
+        });
     } catch (err: any) {
         return res.status(404).json({
             error: 404,
             message: `${err.message}`,
         });
+    }
+};
+
+export const deleteUser: RequestHandler = async (req, res, next) => {
+    try {
+        req.body.forEach(async (id: string) => {
+            await User.destroy({ where: { id } });
+        });
+        return res.status(200).json({
+            message: `users status with ids are deleted`,
+            id: req.body,
+        });
+    } catch (err: any) {
+        return err.message;
     }
 };
 
@@ -83,20 +101,6 @@ export const createUser: RequestHandler = async (req, res, next) => {
         return res
             .status(200)
             .json({ message: 'user created succesfully', data: user });
-    } catch (err: any) {
-        return err.message;
-    }
-};
-
-export const deleteUser: RequestHandler = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const deletedUser: User | null = await User.findByPk(id);
-        await User.destroy({ where: { id } });
-        return res.status(200).json({
-            message: `user with id: ${id} was succesfully deleted`,
-            data: deletedUser,
-        });
     } catch (err: any) {
         return err.message;
     }
