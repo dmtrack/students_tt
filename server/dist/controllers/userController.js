@@ -75,6 +75,8 @@ const signIn = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.signIn = signIn;
 const toggleStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const params = req.body;
+    console.log('PUT PUT PUT!!!!', params);
     try {
         req.body.forEach((id) => __awaiter(void 0, void 0, void 0, function* () {
             const user = yield users_1.User.findByPk(id);

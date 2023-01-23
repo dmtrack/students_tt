@@ -16,3 +16,18 @@ export const fetchUsers = () => {
         }
     };
 };
+
+// export const toggleUsers = (params: []) => {
+//     return async (dispatch: AppDispatch) => {
+//         try {
+//             const response = await axios.put<IServerResponce<[]>>(
+//                 'toggleusers',
+//                 params,
+//                 axiosConfig
+//             );
+//             console.log('response', response);
+//         } catch (e) {
+//             userSlice.actions.fetchError(e as Error);
+//         }
+//     };
+// };

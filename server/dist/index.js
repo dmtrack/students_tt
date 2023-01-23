@@ -9,7 +9,6 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const user_routes_1 = __importDefault(require("./routes/user.routes"));
 const body_parser_1 = require("body-parser");
-// const userRouter = require('./routes/user.routes');
 const cors = require('cors');
 const app = (0, express_1.default)();
 app.use(cors());
@@ -27,4 +26,4 @@ config_1.default
     .catch((err) => {
     console.log('Err', err);
 });
-app.listen(3000);
+app.listen(5000);

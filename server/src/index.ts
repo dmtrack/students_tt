@@ -4,9 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import router from './routes/user.routes';
 import { urlencoded, json } from 'body-parser';
-// const userRouter = require('./routes/user.routes');
 const cors = require('cors');
-
 const app = express();
 app.use(cors());
 app.use(json());
@@ -32,4 +30,4 @@ connection
         console.log('Err', err);
     });
 
-app.listen(3000);
+app.listen(5000);

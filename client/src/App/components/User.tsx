@@ -12,8 +12,6 @@ function User({ user, dataId, setDataId }: IUserProps) {
 
     const chooseCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
         const id = parseInt(e.target.value);
-        console.log(dataId);
-
         if (dataId.includes(id)) {
             const idCollection = dataId.filter((el) => el !== id);
             setDataId(idCollection);
@@ -31,6 +29,7 @@ function User({ user, dataId, setDataId }: IUserProps) {
                     <input
                         type="checkbox"
                         value={id}
+                        id={String(id)}
                         checked={dataId.includes(id) ? true : false}
                         onChange={chooseCheckbox}
                     />

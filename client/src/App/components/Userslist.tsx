@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { IUser } from '../interfaces/IUser';
+import axios from 'axios';
+import React, { useRef, useState } from 'react';
+
+import { IUser, IServerResponce } from '../interfaces/IUser';
 import Button from './button';
 import { User } from './User';
 
@@ -10,6 +12,43 @@ interface IUsersListProps {
 
 const UsersList = ({ users, loading }: IUsersListProps) => {
     const [dataId, setDataId] = useState<Array<any>>([]);
+    const [checked, setChecked] = useState(false);
+
+    async function toggleStatus(params: number[]) {
+        try {
+            console.log(process.env.REACT_APP_BASE_URL);
+
+            const res = await axios.put('togglestatus', { params });
+            console.log(res);
+        } catch (e) {
+            console.log(e as Error);
+        }
+    }
+
+    // async function toggleStatus2(params: any) {
+    //     try {
+    //         const res = fetch('http://localhost:5000/api/togglestatus', {
+    //             method: 'PUT',
+    //             body: params,
+    //         });
+    //         console.log(res);
+    //     } catch (e) {
+    //         console.log(e as Error);
+    //     }
+    // }
+
+    async function handleDelete(params: number[]) {}
+
+    function handleChange(): void {
+        setChecked((prevState) => !prevState);
+        if (dataId.length !== users.length) {
+            const idCollection: number[] = [];
+            users.forEach((u) => {
+                idCollection.push(u.id);
+            });
+            setDataId(idCollection);
+        } else setDataId([]);
+    }
 
     return (
         <div className="user-list">
@@ -19,14 +58,14 @@ const UsersList = ({ users, loading }: IUsersListProps) => {
                 <>
                     <div className="flex justify-end">
                         <Button
-                            onClick={() => alert('Button 1 is clicked !')}
+                            onClick={() => toggleStatus(dataId)}
                             variant="warning"
                             size="sm"
                         >
                             status
                         </Button>
                         <Button
-                            onClick={() => alert('Button 1 is clicked !')}
+                            onClick={() => handleDelete(dataId)}
                             variant="danger"
                             size="sm"
                         >
@@ -42,13 +81,8 @@ const UsersList = ({ users, loading }: IUsersListProps) => {
                                             <input
                                                 type="checkbox"
                                                 className="checkbox"
-                                                checked={
-                                                    dataId.length ===
-                                                    users.length
-                                                        ? true
-                                                        : false
-                                                }
-                                                onChange={console.log}
+                                                checked={checked}
+                                                onChange={handleChange}
                                             />
                                         </th>
                                         <th scope="col" className="px-6 py-3">

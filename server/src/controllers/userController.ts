@@ -58,6 +58,9 @@ export const signIn: RequestHandler = async (req, res, next) => {
 };
 
 export const toggleStatus: RequestHandler = async (req, res, next) => {
+    const params = req.body;
+    console.log('PUT PUT PUT!!!!', params);
+
     try {
         req.body.forEach(async (id: string) => {
             const user = await User.findByPk(id);
