@@ -10,16 +10,15 @@ type MainPageProps = {
 
 export function MainPage() {
     const dispatch = useAppDispatch();
-    const loading = useAppSelector((state) => state.users.loading);
-    const users = useAppSelector((state) => state.users.users);
+    const { users, loading, error } = useAppSelector((state) => state.users);
 
     useEffect(() => {
         dispatch(fetchUsers());
     }, []);
 
     return (
-        <div className="container mx-auto max-w-lg pt-5">
-            {/* <UsersList users={users} loading={false} /> */}
+        <div className="container mx-auto  pt-5">
+            <UsersList users={users} loading={false} />
         </div>
     );
 }
