@@ -6,3 +6,18 @@ export interface IUser {
     login: string;
     blocked: boolean;
 }
+
+export interface IServerResponce<T> {
+    config: {};
+    data: T[];
+    message: string;
+    headers: {};
+    request: {};
+    status: number;
+    statusText: string;
+}
+
+export type UsersListProps = {
+    users: IUser[];
+    loading: boolean;
+};

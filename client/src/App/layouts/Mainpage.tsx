@@ -1,27 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { UsersList } from '../components/Userslist';
-import { IUser } from '../interfaces//IUser';
+import { useAppDispatch, useAppSelector } from '../hook/redux';
+import { IUser, UsersListProps } from '../interfaces//IUser';
+import { fetchUsers } from '../store/actions/userActions';
 
 type MainPageProps = {
     users: IUser[];
 };
 
-const MainPage = () => {
-    const users: IUser[] = [
-        {
-            id: 1,
-            nickname: 'dmtrack',
-            email: 'dmtrack.dev@gmail.com',
-            registered: '17.01.1986',
-            login: '22.01.23',
-            blocked: false,
-        },
-    ];
+export function MainPage() {
+    const dispatch = useAppDispatch();
+    const loading = useAppSelector((state) => state.users.loading);
+    const users = useAppSelector((state) => state.users.users);
+
+    useEffect(() => {
+        dispatch(fetchUsers());
+    }, []);
+
     return (
         <div className="container mx-auto max-w-lg pt-5">
             {/* <UsersList users={users} loading={false} /> */}
         </div>
     );
-};
-
-export { MainPage };
+}
