@@ -11,7 +11,7 @@ import {
 } from '../controllers/userController';
 const router = Router();
 
-// router.post('/createuser', createUser);
+router.post('/createuser', createUser);
 router.get('/getusers', getAllUsers);
 // router.get('/getuser/:id', getUserById);
 // router.put('/updateuser', updateUser);

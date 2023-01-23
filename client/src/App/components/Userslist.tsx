@@ -9,6 +9,7 @@ interface IUsersListProps {
     users: IUser[];
     loading: boolean;
 }
+const URL = process.env.REACT_APP_BASE_URL;
 
 const UsersList = ({ users, loading }: IUsersListProps) => {
     const [dataId, setDataId] = useState<Array<any>>([]);
@@ -16,28 +17,22 @@ const UsersList = ({ users, loading }: IUsersListProps) => {
 
     async function toggleStatus(params: number[]) {
         try {
-            console.log(process.env.REACT_APP_BASE_URL);
-
-            const res = await axios.put('togglestatus', { params });
-            console.log(res);
+            const res = await axios.put(URL + '/togglestatus', { params });
         } catch (e) {
             console.log(e as Error);
         }
     }
 
-    // async function toggleStatus2(params: any) {
-    //     try {
-    //         const res = fetch('http://localhost:5000/api/togglestatus', {
-    //             method: 'PUT',
-    //             body: params,
-    //         });
-    //         console.log(res);
-    //     } catch (e) {
-    //         console.log(e as Error);
-    //     }
-    // }
-
-    async function handleDelete(params: number[]) {}
+    async function handleDelete(params: number[]) {
+        try {
+            const res = await axios.delete(URL + '/deleteuser', {
+                data: { params: params },
+            });
+            console.log(res);
+        } catch (e) {
+            console.log(e as Error);
+        }
+    }
 
     function handleChange(): void {
         setChecked((prevState) => !prevState);
