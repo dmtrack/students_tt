@@ -21,34 +21,42 @@ export const signUp: RequestHandler = async (req, res, next) => {
         const user: User | null = await User.findOne({
             where: { email: email },
         });
-        if (!user) {
-            let user = await User.create({ ...req.body });
+        const obj = { ...req.body, blocked: false };
+        console.log(obj);
+
+        if (Number(user) === 0) {
+            let user = await User.create({
+                ...req.body,
+                blocked: false,
+            });
             return res.status(200).json({
                 message: `user with id:${user.id} was succesfully signed up`,
                 data: user,
             });
-        } else throw Error;
+        } else throw Error();
     } catch (err: any) {
         return res.status(409).json({
             error: 409,
-            message: `user with email: ${req.body.email} is already exist`,
+            message: `user with email:${req.body.email} is already exist`,
         });
     }
 };
 
 export const signIn: RequestHandler = async (req, res, next) => {
     try {
-        const { email } = req.body;
-        const user: User | null = await User.findOne({
-            where: { email: email },
-        });
-        if (user) {
-            await User.update({ login: 'today1' }, { where: { email: email } });
-            return res.status(200).json({
-                message: `user with id: ${user.id} was signed in`,
-                data: user,
-            });
-        } else throw Error;
+        console.log(req, 'req');
+
+        // const { email } = req.body;
+        // const user: User | null = await User.findOne({
+        //     where: { email: email },
+        // });
+        // if (user) {
+        //     await User.update({ login: 'today1' }, { where: { email: email } });
+        //     return res.status(200).json({
+        //         message: `user with id: ${user.id} was signed in`,
+        //         data: user,
+        //     });
+        // } else throw Error;
     } catch (err: any) {
         return res.status(401).json({
             error: 401,

@@ -7,8 +7,10 @@ import { Table, Model, Column, DataType } from 'sequelize-typescript';
 export class User extends Model {
     @Column({
         type: DataType.INTEGER,
-        allowNull: false,
+        autoIncrement: true,
         primaryKey: true,
+        allowNull: false,
+        unique: true,
     })
     id!: number;
 

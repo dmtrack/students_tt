@@ -12,7 +12,7 @@ export const fetchUsers = () => {
             );
             dispatch(userSlice.actions.fetchSuccess(response.data.data));
         } catch (e) {
-            userSlice.actions.fetchError(e as Error);
+            dispatch(userSlice.actions.fetchError(e as Error));
         }
     };
 };

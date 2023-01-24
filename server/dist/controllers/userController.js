@@ -32,39 +32,40 @@ const signUp = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         const user = yield users_1.User.findOne({
             where: { email: email },
         });
-        if (!user) {
-            let user = yield users_1.User.create(Object.assign({}, req.body));
+        const obj = Object.assign(Object.assign({}, req.body), { blocked: false });
+        console.log(obj);
+        if (Number(user) === 0) {
+            let user = yield users_1.User.create(Object.assign(Object.assign({}, req.body), { blocked: false }));
             return res.status(200).json({
                 message: `user with id:${user.id} was succesfully signed up`,
                 data: user,
             });
         }
         else
-            throw Error;
+            throw Error();
     }
     catch (err) {
         return res.status(409).json({
             error: 409,
-            message: `user with email: ${req.body.email} is already exist`,
+            message: `user with email:${req.body.email} is already exist`,
         });
     }
 });
 exports.signUp = signUp;
 const signIn = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email } = req.body;
-        const user = yield users_1.User.findOne({
-            where: { email: email },
-        });
-        if (user) {
-            yield users_1.User.update({ login: 'today1' }, { where: { email: email } });
-            return res.status(200).json({
-                message: `user with id: ${user.id} was signed in`,
-                data: user,
-            });
-        }
-        else
-            throw Error;
+        console.log(req, 'req');
+        // const { email } = req.body;
+        // const user: User | null = await User.findOne({
+        //     where: { email: email },
+        // });
+        // if (user) {
+        //     await User.update({ login: 'today1' }, { where: { email: email } });
+        //     return res.status(200).json({
+        //         message: `user with id: ${user.id} was signed in`,
+        //         data: user,
+        //     });
+        // } else throw Error;
     }
     catch (err) {
         return res.status(401).json({

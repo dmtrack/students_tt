@@ -1,12 +1,7 @@
 import React, { useEffect } from 'react';
 import { UsersList } from '../components/Userslist';
 import { useAppDispatch, useAppSelector } from '../hook/redux';
-import { IUser, UsersListProps } from '../interfaces//IUser';
 import { fetchUsers } from '../store/actions/userActions';
-
-type MainPageProps = {
-    users: IUser[];
-};
 
 export function MainPage() {
     const dispatch = useAppDispatch();
@@ -17,8 +12,17 @@ export function MainPage() {
     }, []);
 
     return (
-        <div className="container mx-auto  pt-5">
-            <UsersList users={users} loading={false} />
-        </div>
+        <>
+            {loading && <p className="text-center text-lg">Loading...</p>}
+            {error && (
+                <p className="pt-10 text-center text-lg text-red-500">
+                    {error}
+                </p>
+            )}
+
+            <div className="container mx-auto  pt-5">
+                <UsersList users={users} />
+            </div>
+        </>
     );
 }

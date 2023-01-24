@@ -26,7 +26,7 @@ export const userSlice = createSlice({
         },
         fetchError(state, action: PayloadAction<Error>) {
             state.loading = false;
-            state.error = action.payload.message;
+            state.error = action.payload.message + ': ' + action.payload?.cause;
         },
     },
 });

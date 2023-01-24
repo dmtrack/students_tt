@@ -6,6 +6,7 @@ interface Props {
     variant?: string;
     size?: string;
     disabled?: boolean;
+    type?: 'submit' | 'button' | 'reset' | undefined;
 }
 
 const Button: React.FC<Props> = ({
@@ -14,6 +15,7 @@ const Button: React.FC<Props> = ({
     variant = 'default',
     size = 'md',
     disabled,
+    type = 'submit',
     ...rest
 }) => {
     return (
@@ -21,6 +23,7 @@ const Button: React.FC<Props> = ({
             className={`btn ${variant} ${size}` + (disabled ? ' disabled' : '')}
             onClick={onClick}
             disabled={disabled}
+            type={type}
             {...rest}
         >
             {children}
