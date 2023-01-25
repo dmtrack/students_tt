@@ -37,6 +37,12 @@ __decorate([
         type: sequelize_typescript_1.DataType.STRING,
         allowNull: false,
     })
+], User.prototype, "password", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.STRING,
+        allowNull: false,
+    })
 ], User.prototype, "registered", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({

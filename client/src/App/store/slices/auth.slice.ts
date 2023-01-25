@@ -1,21 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IError } from '../../interfaces/IAuth';
+import localStorageService from '../../utils/localStorage';
 
 interface IAuthState {
-    access: string;
-    username: string;
+    userId: string;
     isAuth: boolean;
     error: string;
 }
 interface IAuthPayload {
-    username: string;
-    access: string;
+    userId: string;
 }
 
 const initialState: IAuthState = {
-    access: '',
-    username: ' ',
-    isAuth: false,
+    userId: localStorageService.getUserId() ?? '',
+    isAuth: Boolean(localStorageService.getUserId() ?? ''),
     error: '',
 };
 
@@ -24,12 +22,15 @@ export const authSlice = createSlice({
     initialState,
     reducers: {
         signIn(state, action: PayloadAction<IAuthPayload>) {
-            state.access = action.payload.access;
-            state.username = action.payload.username;
-            state.isAuth = Boolean(action.payload.access);
+            state.userId = action.payload.userId;
+            state.isAuth = Boolean(action.payload.userId);
+            localStorageService.setUser({ userId: action.payload.userId });
         },
         fetchError(state, action: PayloadAction<IError>) {
             state.error = action.payload.response.data.message;
+        },
+        userLoggedOut(state) {
+            state.isAuth = false;
         },
     },
 });

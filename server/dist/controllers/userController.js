@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserById = exports.getAllUsers = exports.createUser = exports.deleteUser = exports.toggleStatus = exports.signIn = exports.signUp = exports.updateUser = void 0;
+exports.getUserStatus = exports.getAllUsers = exports.createUser = exports.deleteUser = exports.toggleStatus = exports.signIn = exports.signUp = exports.updateUser = void 0;
 const users_1 = require("../models/users");
 const updateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -54,23 +54,35 @@ const signUp = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
 exports.signUp = signUp;
 const signIn = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(req, 'req');
-        // const { email } = req.body;
-        // const user: User | null = await User.findOne({
-        //     where: { email: email },
-        // });
-        // if (user) {
-        //     await User.update({ login: 'today1' }, { where: { email: email } });
-        //     return res.status(200).json({
-        //         message: `user with id: ${user.id} was signed in`,
-        //         data: user,
-        //     });
-        // } else throw Error;
+        const { password, email, login } = req.body;
+        const user = yield users_1.User.findOne({
+            where: { password: password, email: email },
+        });
+        console.log('found user:', user);
+        if (user) {
+            if (user.blocked === false) {
+                yield users_1.User.update({ login: login }, { where: { email } });
+                return res.status(200).json({
+                    message: `user with id:${user.id} was succesfully signed up`,
+                    data: user,
+                });
+            }
+            else {
+                return res
+                    .status(401)
+                    .json({
+                    error: 401,
+                    message: `user with email: ${email} is blocked`,
+                });
+            }
+        }
+        else
+            throw Error;
     }
     catch (err) {
         return res.status(401).json({
             error: 401,
-            message: `${err.message}`,
+            message: `check your email or password data`,
         });
     }
 });
@@ -139,7 +151,7 @@ const getAllUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.getAllUsers = getAllUsers;
-const getUserById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
         const user = yield users_1.User.findByPk(id);
@@ -151,4 +163,4 @@ const getUserById = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         return err.message;
     }
 });
-exports.getUserById = getUserById;
+exports.getUserStatus = getUserStatus;

@@ -1,11 +1,7 @@
+import { logOut } from './../actions/auth.actions';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IUser } from '../../interfaces/IUser';
-
-interface IUserState {
-    loading: boolean;
-    error: string;
-    users: IUser[];
-}
+import { act } from 'react-dom/test-utils';
+import { DeleteUserProp, IUser, IUserState } from '../../interfaces/IUser';
 
 const initialState: IUserState = {
     loading: false,
@@ -27,6 +23,22 @@ export const userSlice = createSlice({
         fetchError(state, action: PayloadAction<Error>) {
             state.loading = false;
             state.error = action.payload.message + ': ' + action.payload?.cause;
+        },
+        deleteUser(state, action: PayloadAction<DeleteUserProp>) {
+            action.payload.forEach((id) => {
+                state.users = state.users.filter(
+                    (user) => user.id !== Number(id)
+                );
+            });
+        },
+        toggleStatus(state, action: PayloadAction<DeleteUserProp>) {
+            action.payload.forEach((id) => {
+                state.users.forEach((user) => {
+                    if (user.id === Number(id)) {
+                        user.blocked = !user.blocked;
+                    }
+                });
+            });
         },
     },
 });

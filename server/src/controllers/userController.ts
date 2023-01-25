@@ -44,23 +44,24 @@ export const signUp: RequestHandler = async (req, res, next) => {
 
 export const signIn: RequestHandler = async (req, res, next) => {
     try {
-        console.log(req, 'req');
-
-        // const { email } = req.body;
-        // const user: User | null = await User.findOne({
-        //     where: { email: email },
-        // });
-        // if (user) {
-        //     await User.update({ login: 'today1' }, { where: { email: email } });
-        //     return res.status(200).json({
-        //         message: `user with id: ${user.id} was signed in`,
-        //         data: user,
-        //     });
-        // } else throw Error;
+        const { password, email, login } = req.body;
+        const user: User | null = await User.findOne({
+            where: { password: password, email: email },
+        });
+        console.log('found user:', user);
+        if (user) {
+            if (user.blocked === false) {
+                await User.update({ login: login }, { where: { email } });
+                return res.status(200).json({
+                    message: `user with id:${user.id} was succesfully signed up`,
+                    data: user,
+                });
+            } else throw Error;
+        } else throw Error;
     } catch (err: any) {
         return res.status(401).json({
             error: 401,
-            message: `${err.message}`,
+            message: `check your email or password data`,
         });
     }
 };
@@ -128,7 +129,7 @@ export const getAllUsers: RequestHandler = async (req, res, next) => {
     }
 };
 
-export const getUserById: RequestHandler = async (req, res, next) => {
+export const getUserStatus: RequestHandler = async (req, res, next) => {
     try {
         const { id } = req.params;
         const user: User | null = await User.findByPk(id);

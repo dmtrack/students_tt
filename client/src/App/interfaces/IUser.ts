@@ -7,6 +7,12 @@ export interface IUser {
     blocked: boolean;
 }
 
+export interface IUserState {
+    loading: boolean;
+    error: string;
+    users: IUser[];
+}
+
 export interface IServerResponce<T> {
     config: {};
     data: T[];
@@ -18,6 +24,8 @@ export interface IServerResponce<T> {
 }
 
 export type UsersListProps = {
-    users: IUser[];
+    user: IUser[];
     loading: boolean;
 };
+
+export type DeleteUserProp = string[];

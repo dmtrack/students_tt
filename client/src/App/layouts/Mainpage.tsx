@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { UsersList } from '../components/Userslist';
 import { useAppDispatch, useAppSelector } from '../hook/redux';
 import { fetchUsers } from '../store/actions/userActions';
@@ -6,10 +7,18 @@ import { fetchUsers } from '../store/actions/userActions';
 export function MainPage() {
     const dispatch = useAppDispatch();
     const { users, loading, error } = useAppSelector((state) => state.users);
+    const { isAuth } = useAppSelector((state) => state.auth);
+    const navigate = useNavigate();
 
     useEffect(() => {
         dispatch(fetchUsers());
     }, []);
+
+    useEffect(() => {
+        if (!isAuth) {
+            navigate('/login');
+        }
+    }, [isAuth]);
 
     return (
         <>
@@ -19,10 +28,13 @@ export function MainPage() {
                     {error}
                 </p>
             )}
-
-            <div className="container mx-auto  pt-5">
-                <UsersList users={users} />
-            </div>
+            {isAuth ? (
+                <div className="container mx-auto  pt-5">
+                    <UsersList usersProps={users} />
+                </div>
+            ) : (
+                navigate('/login')
+            )}
         </>
     );
 }

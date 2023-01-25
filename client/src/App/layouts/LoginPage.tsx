@@ -3,36 +3,34 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../components/button';
 import { useInput } from '../hook/input';
 import { useAppDispatch, useAppSelector } from '../hook/redux';
-import { register } from '../store/actions/auth.actions';
+import { login } from '../store/actions/auth.actions';
 import { getDate } from '../utils/date';
 
-const AuthPage: React.FC = () => {
+const LoginPage: React.FC = () => {
     const { error } = useAppSelector((state) => state.auth);
+
     const navigate = useNavigate();
-    const username = useInput('');
     const email = useInput('');
     const password = useInput('');
     const dispatch = useAppDispatch();
 
-    const regdate =
-        getDate().day + '.' + getDate().month + 1 + '.' + getDate().year;
     const logindate =
         getDate().day + '.' + getDate().month + 1 + '.' + getDate().year;
 
-    const isFormValid = () => username.value && email.value && password.value;
+    const isFormValid = () => email.value && password.value;
 
     const submitHandler = (event: React.FormEvent) => {
         event.preventDefault();
         if (isFormValid()) {
             dispatch(
-                register({
-                    nickname: username.value,
+                login({
                     email: email.value,
                     password: password.value,
-                    registered: regdate,
                     login: logindate,
                 })
-            ).then(() => navigate('/'));
+            )
+                .then(() => navigate('/'))
+                .catch((e) => console.log(e.message));
         } else alert('Please, fill up all fields');
     };
 
@@ -43,15 +41,6 @@ const AuthPage: React.FC = () => {
             onSubmit={submitHandler}
         >
             <div className="">
-                <label className="block" htmlFor="username">
-                    username
-                </label>
-                <input
-                    className="border py-1 px-2 w-full  text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
-                    type="text"
-                    {...username}
-                    id="username"
-                />
                 <label className="block" htmlFor="email">
                     email
                 </label>
@@ -94,4 +83,4 @@ const AuthPage: React.FC = () => {
     );
 };
 
-export { AuthPage };
+export { LoginPage };

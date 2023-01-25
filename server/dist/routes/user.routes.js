@@ -5,7 +5,7 @@ const userController_1 = require("../controllers/userController");
 const router = (0, express_1.Router)();
 router.post('/createuser', userController_1.createUser);
 router.get('/getusers', userController_1.getAllUsers);
-// router.get('/getuser/:id', getUserById);
+router.get('/getuserstatus', userController_1.getUserStatus);
 // router.put('/updateuser', updateUser);
 router.delete('/deleteuser', userController_1.deleteUser);
 router.post('/signup', userController_1.signUp);

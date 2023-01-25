@@ -1,22 +1,41 @@
 import axios from 'axios';
 import { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../hook/redux';
 
 import { IUser } from '../interfaces/IUser';
+import { logOut } from '../store/actions/auth.actions';
+import { userSlice } from '../store/slices/user.slice';
 import Button from './button';
 import { User } from './User';
 
 interface IUsersListProps {
-    users: IUser[];
+    usersProps: IUser[];
 }
 const URL = process.env.REACT_APP_BASE_URL;
 
-const UsersList = ({ users }: IUsersListProps) => {
+const UsersList = ({ usersProps }: IUsersListProps) => {
     const [dataId, setDataId] = useState<Array<any>>([]);
-    const [checked, setChecked] = useState(false);
 
+    const [checked, setChecked] = useState(false);
+    const { users } = useAppSelector((state) => state.users);
+    const { userId } = useAppSelector((state) => state.auth);
+    console.log(dataId, userId);
+
+    const dispatch = useAppDispatch();
     async function toggleStatus(params: number[]) {
         try {
-            await axios.put(URL + '/togglestatus', { params });
+            await axios
+                .put(URL + '/togglestatus', { params })
+                .then((data) =>
+                    dispatch(
+                        userSlice.actions.toggleStatus(data.data.id.params)
+                    )
+                )
+                .then(() => {
+                    if (dataId.includes(Number(userId))) {
+                        dispatch(logOut());
+                    }
+                });
         } catch (e) {
             console.log(e as Error);
         }
@@ -24,9 +43,13 @@ const UsersList = ({ users }: IUsersListProps) => {
 
     async function handleDelete(params: number[]) {
         try {
-            const res = await axios.delete(URL + '/deleteuser', {
-                data: { params: params },
-            });
+            const res = await axios
+                .delete(URL + '/deleteuser', {
+                    data: { params: params },
+                })
+                .then((data) =>
+                    dispatch(userSlice.actions.deleteUser(data.data.id.params))
+                );
         } catch (e) {
             console.log(e as Error);
         }

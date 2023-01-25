@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import {
     createUser,
-    getUserById,
+    getUserStatus,
     getAllUsers,
     deleteUser,
     updateUser,
@@ -13,7 +13,7 @@ const router = Router();
 
 router.post('/createuser', createUser);
 router.get('/getusers', getAllUsers);
-// router.get('/getuser/:id', getUserById);
+router.get('/getuserstatus', getUserStatus);
 // router.put('/updateuser', updateUser);
 router.delete('/deleteuser', deleteUser);
 
