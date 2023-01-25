@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express';
 import { User } from '../models/users';
+const { SHA3 } = require('sha3');
 
 export const updateUser: RequestHandler = async (req, res, next) => {
     try {
@@ -17,17 +18,19 @@ export const updateUser: RequestHandler = async (req, res, next) => {
 
 export const signUp: RequestHandler = async (req, res, next) => {
     try {
-        const { email } = req.body;
+        const { email, password } = req.body;
         const user: User | null = await User.findOne({
             where: { email: email },
         });
+        const hash = new SHA3(256);
+        const hashpass = hash.update(password).digest('hex');
+
         const obj = { ...req.body, blocked: false };
-        console.log(obj);
+        obj.password = hashpass;
 
         if (Number(user) === 0) {
             let user = await User.create({
-                ...req.body,
-                blocked: false,
+                ...obj,
             });
             return res.status(200).json({
                 message: `user with id:${user.id} was succesfully signed up`,
@@ -45,8 +48,10 @@ export const signUp: RequestHandler = async (req, res, next) => {
 export const signIn: RequestHandler = async (req, res, next) => {
     try {
         const { password, email, login } = req.body;
+        const hash = new SHA3(256);
+        const hashpass = hash.update(password).digest('hex');
         const user: User | null = await User.findOne({
-            where: { password: password, email: email },
+            where: { password: hashpass, email: email },
         });
         console.log('found user:', user);
         if (user) {
@@ -61,21 +66,40 @@ export const signIn: RequestHandler = async (req, res, next) => {
     } catch (err: any) {
         return res.status(401).json({
             error: 401,
-            message: `check your email or password data`,
+            message: `access is not allowed`,
         });
     }
 };
 
-export const toggleStatus: RequestHandler = async (req, res, next) => {
+export const toggleBlock: RequestHandler = async (req, res, next) => {
     try {
         const { params } = req.body;
         params.forEach(async (id: string) => {
             const user = await User.findByPk(id);
             if (user) {
-                await User.update(
-                    { blocked: !user.blocked },
-                    { where: { id } }
-                );
+                await User.update({ blocked: true }, { where: { id } });
+                const updatedUser: User | null = await User.findByPk(id);
+            }
+        });
+        return res.status(200).json({
+            message: `user's status with id are changed`,
+            id: req.body,
+        });
+    } catch (err: any) {
+        return res.status(404).json({
+            error: 404,
+            message: `${err.message}`,
+        });
+    }
+};
+
+export const toggleUnblock: RequestHandler = async (req, res, next) => {
+    try {
+        const { params } = req.body;
+        params.forEach(async (id: string) => {
+            const user = await User.findByPk(id);
+            if (user) {
+                await User.update({ blocked: false }, { where: { id } });
                 const updatedUser: User | null = await User.findByPk(id);
             }
         });

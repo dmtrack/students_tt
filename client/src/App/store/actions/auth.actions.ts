@@ -50,8 +50,6 @@ export const login = (data: ILoginData) => {
 };
 
 export const logOut = () => (dispatch: AppDispatch) => {
-    console.log('hello logout');
-
     localStorageService.removeAuthData();
     dispatch(authSlice.actions.userLoggedOut());
 };

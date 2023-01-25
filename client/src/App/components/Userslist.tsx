@@ -22,13 +22,13 @@ const UsersList = ({ usersProps }: IUsersListProps) => {
     console.log(dataId, userId);
 
     const dispatch = useAppDispatch();
-    async function toggleStatus(params: number[]) {
+    async function toggleBlock(params: number[]) {
         try {
             await axios
-                .put(URL + '/togglestatus', { params })
+                .put(URL + '/block', { params })
                 .then((data) =>
                     dispatch(
-                        userSlice.actions.toggleStatus(data.data.id.params)
+                        userSlice.actions.toggleBlockState(data.data.id.params)
                     )
                 )
                 .then(() => {
@@ -36,6 +36,22 @@ const UsersList = ({ usersProps }: IUsersListProps) => {
                         dispatch(logOut());
                     }
                 });
+        } catch (e) {
+            console.log(e as Error);
+        }
+    }
+
+    async function toggleUnblock(params: number[]) {
+        try {
+            await axios
+                .put(URL + '/unblock', { params })
+                .then((data) =>
+                    dispatch(
+                        userSlice.actions.toggleUnblockState(
+                            data.data.id.params
+                        )
+                    )
+                );
         } catch (e) {
             console.log(e as Error);
         }
@@ -49,7 +65,12 @@ const UsersList = ({ usersProps }: IUsersListProps) => {
                 })
                 .then((data) =>
                     dispatch(userSlice.actions.deleteUser(data.data.id.params))
-                );
+                )
+                .then(() => {
+                    if (dataId.includes(Number(userId))) {
+                        dispatch(logOut());
+                    }
+                });
         } catch (e) {
             console.log(e as Error);
         }
@@ -72,11 +93,18 @@ const UsersList = ({ usersProps }: IUsersListProps) => {
                 <div>
                     <div className="flex justify-end">
                         <Button
-                            onClick={() => toggleStatus(dataId)}
+                            onClick={() => toggleBlock(dataId)}
                             variant="warning"
                             size="sm"
                         >
-                            status
+                            block
+                        </Button>
+                        <Button
+                            onClick={() => toggleUnblock(dataId)}
+                            variant="info"
+                            size="sm"
+                        >
+                            unblock
                         </Button>
                         <Button
                             onClick={() => handleDelete(dataId)}

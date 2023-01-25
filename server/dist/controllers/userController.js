@@ -9,8 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserStatus = exports.getAllUsers = exports.createUser = exports.deleteUser = exports.toggleStatus = exports.signIn = exports.signUp = exports.updateUser = void 0;
+exports.getUserStatus = exports.getAllUsers = exports.createUser = exports.deleteUser = exports.toggleUnblock = exports.toggleBlock = exports.signIn = exports.signUp = exports.updateUser = void 0;
 const users_1 = require("../models/users");
+const { SHA3 } = require('sha3');
 const updateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
@@ -28,14 +29,16 @@ const updateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
 exports.updateUser = updateUser;
 const signUp = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email } = req.body;
+        const { email, password } = req.body;
         const user = yield users_1.User.findOne({
             where: { email: email },
         });
+        const hash = new SHA3(256);
+        const hashpass = hash.update(password).digest('hex');
         const obj = Object.assign(Object.assign({}, req.body), { blocked: false });
-        console.log(obj);
+        obj.password = hashpass;
         if (Number(user) === 0) {
-            let user = yield users_1.User.create(Object.assign(Object.assign({}, req.body), { blocked: false }));
+            let user = yield users_1.User.create(Object.assign({}, obj));
             return res.status(200).json({
                 message: `user with id:${user.id} was succesfully signed up`,
                 data: user,
@@ -55,8 +58,10 @@ exports.signUp = signUp;
 const signIn = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { password, email, login } = req.body;
+        const hash = new SHA3(256);
+        const hashpass = hash.update(password).digest('hex');
         const user = yield users_1.User.findOne({
-            where: { password: password, email: email },
+            where: { password: hashpass, email: email },
         });
         console.log('found user:', user);
         if (user) {
@@ -67,14 +72,8 @@ const signIn = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
                     data: user,
                 });
             }
-            else {
-                return res
-                    .status(401)
-                    .json({
-                    error: 401,
-                    message: `user with email: ${email} is blocked`,
-                });
-            }
+            else
+                throw Error;
         }
         else
             throw Error;
@@ -82,18 +81,18 @@ const signIn = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
     catch (err) {
         return res.status(401).json({
             error: 401,
-            message: `check your email or password data`,
+            message: `access is not allowed`,
         });
     }
 });
 exports.signIn = signIn;
-const toggleStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const toggleBlock = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { params } = req.body;
         params.forEach((id) => __awaiter(void 0, void 0, void 0, function* () {
             const user = yield users_1.User.findByPk(id);
             if (user) {
-                yield users_1.User.update({ blocked: !user.blocked }, { where: { id } });
+                yield users_1.User.update({ blocked: true }, { where: { id } });
                 const updatedUser = yield users_1.User.findByPk(id);
             }
         }));
@@ -109,7 +108,30 @@ const toggleStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         });
     }
 });
-exports.toggleStatus = toggleStatus;
+exports.toggleBlock = toggleBlock;
+const toggleUnblock = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { params } = req.body;
+        params.forEach((id) => __awaiter(void 0, void 0, void 0, function* () {
+            const user = yield users_1.User.findByPk(id);
+            if (user) {
+                yield users_1.User.update({ blocked: false }, { where: { id } });
+                const updatedUser = yield users_1.User.findByPk(id);
+            }
+        }));
+        return res.status(200).json({
+            message: `user's status with id are changed`,
+            id: req.body,
+        });
+    }
+    catch (err) {
+        return res.status(404).json({
+            error: 404,
+            message: `${err.message}`,
+        });
+    }
+});
+exports.toggleUnblock = toggleUnblock;
 const deleteUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { params } = req.body;

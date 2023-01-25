@@ -31,11 +31,20 @@ export const userSlice = createSlice({
                 );
             });
         },
-        toggleStatus(state, action: PayloadAction<DeleteUserProp>) {
+        toggleBlockState(state, action: PayloadAction<DeleteUserProp>) {
             action.payload.forEach((id) => {
                 state.users.forEach((user) => {
                     if (user.id === Number(id)) {
-                        user.blocked = !user.blocked;
+                        user.blocked = true;
+                    }
+                });
+            });
+        },
+        toggleUnblockState(state, action: PayloadAction<DeleteUserProp>) {
+            action.payload.forEach((id) => {
+                state.users.forEach((user) => {
+                    if (user.id === Number(id)) {
+                        user.blocked = false;
                     }
                 });
             });
